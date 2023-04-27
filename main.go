@@ -16,5 +16,6 @@ func main() {
 		log.Fatal("Error loading .env files")
 	}
 	port := os.Getenv("PORT")
-	app := fiber.New
+	app := fiber.New()
+	app.Listen(":" + port)
 }
