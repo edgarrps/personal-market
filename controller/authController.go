@@ -28,6 +28,10 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 	if !validateEmail(strings.TrimSpace(data["email"].(string))) {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "Password must be freater than 6 characters",
+		})
 
 	}
 }
