@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/edgarrps/personal-market-backend/database"
 	"github.com/edgarrps/personal-market-backend/models"
 	"github.com/gofiber/fiber/v2"
 )
@@ -30,8 +31,16 @@ func Register(c *fiber.Ctx) error {
 	if !validateEmail(strings.TrimSpace(data["email"].(string))) {
 		c.Status(400)
 		return c.JSON(fiber.Map{
-			"message": "Password must be freater than 6 characters",
+			"message": "Invalid Email Address",
 		})
 
+	}
+	//Check if email already exist in database
+	database.DB.Where("email=?", strings.TrimSpace(data["email"]))
+	user := models.User{
+		FirstName: data["first_name"].(string),
+		LastName:  data["last_name"].(string),
+		Phone:     data["phone"].(string),
+		Email:     strings.TrimSpace(data["email"].(string)),
 	}
 }
