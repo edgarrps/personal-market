@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 
@@ -36,11 +37,27 @@ func Register(c *fiber.Ctx) error {
 
 	}
 	//Check if email already exist in database
-	database.DB.Where("email=?", strings.TrimSpace(data["email"]))
+	database.DB.Where("email=?", strings.TrimSpace(data["email"].(string))).First(&userData)
+	if userData.Id != 0 {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "Email already exist",
+			})
+
 	user := models.User{
 		FirstName: data["first_name"].(string),
 		LastName:  data["last_name"].(string),
 		Phone:     data["phone"].(string),
 		Email:     strings.TrimSpace(data["email"].(string)),
 	}
+	user.SetPassword(data["password"](string))
+	err:=database.DB.Create(&user)
+	if err:= nil {
+		log.Println(err)
+	}
+	c.Status(400)
+	return c.JSON(fiber.Map{
+		"user":user,
+		"message": "Account created succesfully",
+		})
 }
