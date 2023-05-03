@@ -8,3 +8,9 @@ type User struct {
 	Password  []byte `json:"-"`
 	Phone     string `json:"phone"`
 }
+
+
+func (user *User) SetPassword(pasword string) {
+	hashedPassword, :=bcrypt.GenerateFromPassword([]byte(password),14)
+	user.Password= hashedPassword
+}
